@@ -138,11 +138,18 @@ public class AlarmPersisterImpl implements AlarmPersister {
         String key = reductionKey;
         String clearKey = event.getAlarmData().getClearKey();
         
+        boolean isClearingEvent = false;
         if (!m_legacyAlarmState && clearKey != null && isResolutionEvent(event)) {
             key = clearKey;
+            isClearingEvent = true;
         }
 
         OnmsAlarm alarm = m_alarmDao.findByReductionKey(key);
+
+        if (alarm == null && isClearingEvent) {
+            // check for previous clearing events
+            alarm = m_alarmDao.findByReductionKey(reductionKey);
+        }
 
         if (alarm == null || (m_createNewAlarmIfClearedAlarmExists && OnmsSeverity.CLEARED.equals(alarm.getSeverity()))) {
             if (LOG.isDebugEnabled()) {
