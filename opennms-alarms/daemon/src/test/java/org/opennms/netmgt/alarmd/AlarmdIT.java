@@ -242,7 +242,8 @@ public class AlarmdIT implements TemporaryDatabaseAware<MockDatabase>, Initializ
         sendNodeUpEvent(node);
 
         // We should only have one alarm now and should have a count of 2
-        await().until(() -> m_alarmDao.findAll().size() == 1 && m_alarmDao.findAll().get(0).getCounter() == 2);
+        await().until(() -> m_alarmDao.findAll(), hasSize(1));
+        await().until(() -> m_alarmDao.findAll().get(0).getCounter(), equalTo(2));
     }
 
     @Test
@@ -259,9 +260,9 @@ public class AlarmdIT implements TemporaryDatabaseAware<MockDatabase>, Initializ
 
         // We should have 2 alarms now
         // The problem should be cleared and the clear should be normal
-        await().until(() -> m_alarmDao.findAll().size() == 2
-                && m_alarmDao.findByReductionKey("uei.opennms.org/nodes/nodeDown:1").getSeverity() == OnmsSeverity.CLEARED
-                && m_alarmDao.findByReductionKey("uei.opennms.org/nodes/nodeUp:1").getSeverity() == OnmsSeverity.NORMAL);
+        await().until(() -> m_alarmDao.findAll().size(), equalTo(2));
+        await().until(() -> m_alarmDao.findByReductionKey("uei.opennms.org/nodes/nodeDown:1").getSeverity(), equalTo(OnmsSeverity.CLEARED));
+        await().until(() -> m_alarmDao.findByReductionKey("uei.opennms.org/nodes/nodeUp:1").getSeverity(), equalTo(OnmsSeverity.NORMAL));
     }
 
     @Test
