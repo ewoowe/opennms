@@ -28,6 +28,8 @@
 
 package org.opennms.features.vaadin.dashboard.config.ui.editors;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -183,7 +185,7 @@ public class CriteriaRestrictionComponent extends HorizontalLayout {
             AbstractField abstractField = criteriaEntry.getComponent(m_criteriaBuilderHelper);
 
             if (arr != null && arr.length > i) {
-                abstractField.setValue(arr[i]);
+                abstractField.setValue(CriteriaBuilderHelper.decode(arr[i]));
             }
 
             m_leftLayout.addComponent(abstractField);
@@ -210,7 +212,7 @@ public class CriteriaRestrictionComponent extends HorizontalLayout {
                 criteria += ",";
             }
 
-            criteria += abstractField.getValue();
+            criteria += CriteriaBuilderHelper.encode(abstractField.getValue().toString());
 
             first = false;
         }
